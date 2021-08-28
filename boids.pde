@@ -1,16 +1,22 @@
+import peasy.*;
+
+PeasyCam cam;
 ArrayList<car> cars;
 int radius = 2;
 
 void setup(){
   cars =new ArrayList<car>();
-  //size(1000, 1000);
-  fullScreen(P2D);
-  for (int i = 0; i < 2000; i++) {
+  size(1000, 1000,P3D);
+  //fullScreen(P3D);
+  for (int i = 0; i < 500; i++) {
     car c;
-    c = new car(random(radius, width - radius), random(radius, height - 10), radius);
+    c = new car(random(radius, width - radius), random(radius, height - 10),random(radius, height - 10), radius);
     // c.vel = createVector(random(-c.maxSpeed, c.maxSpeed), random(-c.maxSpeed, c.maxSpeed))
     cars.add(c);
   }
+  cam = new PeasyCam(this,100);
+  cam.setMinimumDistance(50);
+  cam.setMaximumDistance(5000);
   
 }
 
@@ -29,12 +35,12 @@ void draw(){
       if (c2 == c) {} else {
         float dist = PVector.dist(c2.loc, c.loc);
 
-        if (abs(dist) < c.w + 3) {
+        if (abs(dist) < c.w + 25) {
 
           c2.applyForce(c2.repel(c.loc));
           c.applyForce(c.repel(c2.loc));
         }
-        if (abs(dist) < 15) {
+        if (abs(dist) < 50) {
           heading.add(c2.vel);
           position.add(c2.loc);
           locals++;
@@ -60,14 +66,18 @@ void draw(){
       c.applyForce(steer);
 
       c.applyForce(c.seek(position));
+      stroke(255);
+      
       //c.col= color(r/locals, g/locals,b/locals);
     } else {
       c.col = c.orig;
     }
+    
     r=0;
     g=0;
     b=0;
     c.update();
+    line(c.loc.x, c.loc.y, c.loc.z, c.loc.x+c.vel.x,c.loc.y+ c.vel.y,c.loc.z+ c.vel.z);
   }
 }
 class car{
@@ -77,14 +87,14 @@ class car{
   color col, orig;
   float w;
   
-  car(float x, float y, int wd){
-      loc = new PVector(x,y);
+  car(float x, float y, float z, int wd){
+      loc = new PVector(x,y,z);
       vel = new PVector();
       acc = new PVector();
       
       w = wd;
-      maxSpeed = random(0.9,1.25);
-      maxForce = random(0.010,0.1);
+      maxSpeed = random(2.9,3.25);
+      maxForce = random(0.10,1);
       col = color(random(255), random(255),random(255));
       orig = col;
       
@@ -95,7 +105,10 @@ class car{
   void show(){
     fill(col);
     stroke(col);
-    circle(loc.x, loc.y, w);
+    pushMatrix();
+    translate(loc.x, loc.y, loc.z);
+    sphere(w);
+    popMatrix();
   }
   
   void update(){
@@ -118,6 +131,12 @@ class car{
     }
     if (this.loc.y > height) {
       this.loc.y = this.w;
+    }
+    if (this.loc.z > height) {
+      this.loc.z = this.w;
+    }
+        if (this.loc.z < this.w) {
+      this.loc.z = height - this.w;
     }
   }
   
