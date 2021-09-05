@@ -15,17 +15,18 @@ void setup() {
   }
   obstacles =new ArrayList<obstacle>();
 
-  for (int i=0; i<10; i++) {
+  for (int i=0; i<20; i++) {
     obstacles.add(new obstacle(floor(random(width)), floor(random(height))));
   }
 }
 void mouseClicked() {
   car c;
-  for(int n = 0 ; n < 10;n++){
-    c = new car(mouseX + random(-5,5), mouseY + random(-5,5), radius);    
- 
-  
-  cars.add(c); }
+  for (int n = 0; n < 10; n++) {
+    c = new car(mouseX + random(-5, 5), mouseY + random(-5, 5), radius);    
+
+
+    cars.add(c);
+  }
 }
 void draw() {
   background(0);
@@ -40,16 +41,16 @@ void draw() {
     for (obstacle o : obstacles) {
       //if(!c.done){
       if (c.loc.dist(o.loc) < (o.r + c.w) + 30) {
-      //  c.vel.mult(-1);
-      //  c.col=color(255, 0, 0); 
-      //  println("HIT:");
-      //  //if(c.vel.x == 0 && c.vel.y == 0){
-      //  //  c.vel= PVector.random2D();
-      //  //}
-      //  c.done = true;
-      //} else if (c.loc.dist(o.loc) < (o.r + c.w) + 30) {
-      //  println("Close:");
-      //  c.col=color(255, 0, 0);  
+        //  c.vel.mult(-1);
+        //  c.col=color(255, 0, 0); 
+        //  println("HIT:");
+        //  //if(c.vel.x == 0 && c.vel.y == 0){
+        //  //  c.vel= PVector.random2D();
+        //  //}
+        //  c.done = true;
+        //} else if (c.loc.dist(o.loc) < (o.r + c.w) + 30) {
+        //  println("Close:");
+        //  c.col=color(255, 0, 0);  
         c.applyForce(c.repel(new PVector(o.loc.x, o.loc.y)));
         c.applyForce(c.repel(new PVector(o.loc.x, o.loc.y)));
         c.applyForce(c.repel(new PVector(o.loc.x, o.loc.y)));
@@ -57,11 +58,11 @@ void draw() {
         c.applyForce(c.repel(new PVector(o.loc.x, o.loc.y)));
         c.done = true;
       } else {
-      //  c.col=color(0, 255, 0);
+        //  c.col=color(0, 255, 0);
         c.done = false;
       }
     }
-  //}
+    //}
     PVector heading = new PVector();
     PVector position = new PVector();
     float r=0, g=0, b=0;
@@ -72,27 +73,32 @@ void draw() {
     int locals = 0;
     for (int i = 0; i < cars.size(); i++) {
       //if (!c.done) {
-        
-        car c2 = cars.get(i);
-        if (c2 == c) {
-        } else {
-          float dist = PVector.dist(c2.loc, c.loc);
 
-          if (abs(dist) < c.w + 3) {
+      car c2 = cars.get(i);
+      if (c2 == c) {
+      } else {
+        float dist = PVector.dist(c2.loc, c.loc);
 
-            c2.applyForce(c2.repel(c.loc));
-            c.applyForce(c.repel(c2.loc));
-          }
-          if (abs(dist) < 15) {
-            heading.add(c2.vel);
-            position.add(c2.loc);
-            locals++;
-            r+=red(c2.col);
-            g+=green(c2.col);
-            b+=blue(c2.col);
-            // console.log(red(c2.col))
-          }
+        if (abs(dist) < c.w + 3) {
+          c2.applyForce(c2.repel(c.loc));
+          c.applyForce(c.repel(c2.loc));
+          c2.applyForce(c2.repel(c.loc));
+          c.applyForce(c.repel(c2.loc));
+          c2.applyForce(c2.repel(c.loc));
+          c.applyForce(c.repel(c2.loc));
+          c2.applyForce(c2.repel(c.loc));
+          c.applyForce(c.repel(c2.loc));
         }
+        if (abs(dist) < 15) {
+          heading.add(c2.vel);
+          position.add(c2.loc);
+          locals++;
+          r+=red(c2.col);
+          g+=green(c2.col);
+          b+=blue(c2.col);
+          // console.log(red(c2.col))
+        }
+      }
       //}
     }
     if (locals > 0) {
@@ -167,7 +173,7 @@ class car {
   void update() {
     checkEdges();
     vel.add(acc);
-    vel.limit(maxSpeed);
+    vel.limit(random(maxSpeed*.5,maxSpeed));
     loc.add(vel);
     acc.mult(0);
   }
@@ -190,20 +196,21 @@ class car {
 
   PVector seek(PVector t) {
     PVector desired = PVector.sub(t, this.loc);
-    desired.normalize();
-    desired.mult(this.maxSpeed);
+    //desired.normalize();
+    desired.mult(random(this.maxSpeed));
 
     PVector steer = PVector.sub(desired, this.vel);
-    steer.normalize();
+    //steer.normalize();
     steer.limit(this.maxForce);
     return steer;
   }
   PVector repel(PVector t) {
     PVector desired = PVector.sub(t, this.loc);
-    desired.normalize();
-    desired.mult(-this.maxSpeed);
+    //desired.normalize();
+    desired.mult(random(-this.maxSpeed));
 
     PVector steer = PVector.sub(desired, this.vel);
+    //steer.normalize();
     steer.limit(this.maxForce);
     return steer;
   }
