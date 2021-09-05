@@ -7,7 +7,7 @@ void setup() {
   cars =new ArrayList<car>();
   size(1000, 1000, P2D);
   //fullScreen(P2D);
-  for (int i = 0; i < 0; i++) {
+  for (int i = 0; i < 1000; i++) {
     car c;
     c = new car(random(radius, width - radius), random(radius, height - 10), radius);
     // c.vel = createVector(random(-c.maxSpeed, c.maxSpeed), random(-c.maxSpeed, c.maxSpeed))
@@ -71,7 +71,7 @@ void draw() {
     // Repel each other.
     int locals = 0;
     for (int i = 0; i < cars.size(); i++) {
-      if (!c.done) {
+      //if (!c.done) {
         
         car c2 = cars.get(i);
         if (c2 == c) {
@@ -93,7 +93,7 @@ void draw() {
             // console.log(red(c2.col))
           }
         }
-      }
+      //}
     }
     if (locals > 0) {
       heading = PVector.div(heading, locals);
